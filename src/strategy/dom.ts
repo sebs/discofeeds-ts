@@ -1,5 +1,5 @@
 import { FeedFinderStrategy } from '../disco-feeds';
-import { DOMParser } from '@xmldom/xmldom';
+import { DOMParser } from 'xmldom-qsa';
 export class DomStrategy implements FeedFinderStrategy {
     public static readonly CONTENT_TYPE = 'text/html';
     public static readonly DOM_QUERY = 'link[type="application/rss+xml"]';
@@ -7,9 +7,13 @@ export class DomStrategy implements FeedFinderStrategy {
 
     discover(html: string, onFeed: (feed: string) => void): string[] {
       const parser = new DOMParser();
-      const doc = parser.parseFromString(html, DomStrategy.CONTENT_TYPE);
+      const doc = parser.parseFromString(html, DomStrategy.CONTENT_TYPE);  
+  
       const links = doc.querySelectorAll(DomStrategy.DOM_QUERY);
-      const feedLinks = Array.from(links).map((link) => link.getAttribute(DomStrategy.HREF_ATTR_NAME) || '');
+      const feedLinks = Array
+        .from(links)
+        .map((link) => link.getAttribute(DomStrategy.HREF_ATTR_NAME) || '');
+  
       feedLinks.forEach((feedLink: string) => onFeed(feedLink));
       return feedLinks;
     }
